@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import logging
 import os
-
-import requests
 from playsound import playsound
 
 from forge.models.config import SystemConfiguration, UserConfigurable
 
 from .base import VoiceBase
+from security import safe_requests
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +37,7 @@ class StreamElementsSpeech(VoiceBase):
         tts_url = (
             f"https://api.streamelements.com/kappa/v2/speech?voice={voice}&text={text}"
         )
-        response = requests.get(tts_url)
+        response = safe_requests.get(tts_url)
 
         if response.status_code == 200:
             with open("speech.mp3", "wb") as f:

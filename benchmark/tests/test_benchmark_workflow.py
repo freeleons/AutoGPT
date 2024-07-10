@@ -3,6 +3,7 @@ import time
 
 import pytest
 import requests
+from security import safe_requests
 
 URL_BENCHMARK = "http://localhost:8080/ap/v1"
 URL_AGENT = "http://localhost:8000/ap/v1"
@@ -59,8 +60,7 @@ def test_entire_workflow(
 
     task_response_benchmark_id = task_response_benchmark["task_id"]
 
-    response_task_agent = requests.get(
-        f"{URL_AGENT}/agent/tasks/{task_response_benchmark_id}"
+    response_task_agent = safe_requests.get(f"{URL_AGENT}/agent/tasks/{task_response_benchmark_id}"
     )
     assert response_task_agent.status_code == 200
     response_task_agent = response_task_agent.json()
