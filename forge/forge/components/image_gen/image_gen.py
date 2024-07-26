@@ -139,7 +139,7 @@ class ImageGeneratorComponent(
                 json={
                     "inputs": prompt,
                 },
-            )
+            timeout=60)
 
             if response.ok:
                 try:
@@ -254,7 +254,7 @@ class ImageGeneratorComponent(
                 "n_iter": 1,
                 **extra,
             },
-        )
+        timeout=60)
 
         logger.info(f"Image Generated for prompt: '{prompt}'")
 

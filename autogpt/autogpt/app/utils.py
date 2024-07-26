@@ -22,8 +22,8 @@ logger = logging.getLogger(__name__)
 def get_bulletin_from_web():
     try:
         response = requests.get(
-            "https://raw.githubusercontent.com/Significant-Gravitas/AutoGPT/master/autogpt/BULLETIN.md"  # noqa: E501
-        )
+            "https://raw.githubusercontent.com/Significant-Gravitas/AutoGPT/master/autogpt/BULLETIN.md",   # noqa: E501
+        timeout=60)
         if response.status_code == 200:
             return response.text
     except requests.exceptions.RequestException:
