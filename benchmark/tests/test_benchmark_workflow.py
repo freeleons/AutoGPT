@@ -8,7 +8,7 @@ URL_BENCHMARK = "http://localhost:8080/ap/v1"
 URL_AGENT = "http://localhost:8000/ap/v1"
 
 try:
-    response = requests.get(f"{URL_AGENT}/agent/tasks")
+    response = requests.get(f"{URL_AGENT}/agent/tasks", timeout=60)
 except requests.exceptions.ConnectionError:
     pytest.skip("No agent available to test against", allow_module_level=True)
 
@@ -41,13 +41,13 @@ def test_entire_workflow(
     should_be_successful: bool,
 ):
     task_request = {"eval_id": eval_id, "input": input_text}
-    response = requests.get(f"{URL_AGENT}/agent/tasks")
+    response = requests.get(f"{URL_AGENT}/agent/tasks", timeout=60)
     task_count_before = response.json()["pagination"]["total_items"]
     # First POST request
     task_response_benchmark = requests.post(
-        URL_BENCHMARK + "/agent/tasks", json=task_request
-    )
-    response = requests.get(f"{URL_AGENT}/agent/tasks")
+        URL_BENCHMARK + "/agent/tasks", json=task_request, 
+    timeout=60)
+    response = requests.get(f"{URL_AGENT}/agent/tasks", timeout=60)
     task_count_after = response.json()["pagination"]["total_items"]
     assert task_count_after == task_count_before + 1
 
@@ -60,8 +60,8 @@ def test_entire_workflow(
     task_response_benchmark_id = task_response_benchmark["task_id"]
 
     response_task_agent = requests.get(
-        f"{URL_AGENT}/agent/tasks/{task_response_benchmark_id}"
-    )
+        f"{URL_AGENT}/agent/tasks/{task_response_benchmark_id}", 
+    timeout=60)
     assert response_task_agent.status_code == 200
     response_task_agent = response_task_agent.json()
     assert len(response_task_agent["artifacts"]) == expected_artifact_length
@@ -71,7 +71,7 @@ def test_entire_workflow(
     step_response = requests.post(
         URL_BENCHMARK + "/agent/tasks/" + task_response_benchmark_id + "/steps",
         json=step_request,
-    )
+    timeout=60)
     assert step_response.status_code == 200
     step_response = step_response.json()
     assert step_response["is_last"] is True  # Assuming is_last is always True
@@ -79,7 +79,7 @@ def test_entire_workflow(
     eval_response = requests.post(
         URL_BENCHMARK + "/agent/tasks/" + task_response_benchmark_id + "/evaluations",
         json={},
-    )
+    timeout=60)
     assert eval_response.status_code == 200
     eval_response = eval_response.json()
     print("eval_response")
