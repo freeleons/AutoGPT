@@ -1,6 +1,5 @@
 import logging
 import os
-import random
 import shlex
 import string
 import subprocess
@@ -22,6 +21,7 @@ from forge.utils.exceptions import (
     InvalidArgumentError,
     OperationNotAllowedError,
 )
+import secrets
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +90,7 @@ class CodeExecutorComponent(
             not self.config.docker_container_name
             or self.config.docker_container_name == default_container_name
         ):
-            random_suffix = "".join(random.choices(string.ascii_lowercase, k=8))
+            random_suffix = "".join(secrets.SystemRandom().choices(string.ascii_lowercase, k=8))
             self.config.docker_container_name = (
                 f"{default_container_name}_{random_suffix}"
             )
@@ -429,5 +429,5 @@ class CodeExecutorComponent(
         # Create a string of all letters and digits
         characters = string.ascii_letters + string.digits
         # Use random.choices to generate a random string
-        random_string = "".join(random.choices(characters, k=length))
+        random_string = "".join(secrets.SystemRandom().choices(characters, k=length))
         return random_string
