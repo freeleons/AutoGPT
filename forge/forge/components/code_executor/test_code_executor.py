@@ -1,4 +1,3 @@
-import random
 import string
 import tempfile
 from pathlib import Path
@@ -13,6 +12,7 @@ from .code_executor import (
     is_docker_available,
     we_are_running_in_a_docker_container,
 )
+import secrets
 
 
 @pytest.fixture
@@ -47,7 +47,7 @@ def python_test_args_file(storage: FileStorage):
 
 @pytest.fixture
 def random_string():
-    return "".join(random.choice(string.ascii_lowercase) for _ in range(10))
+    return "".join(secrets.choice(string.ascii_lowercase) for _ in range(10))
 
 
 def test_execute_python_file(
