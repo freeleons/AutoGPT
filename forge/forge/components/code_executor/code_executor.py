@@ -22,6 +22,7 @@ from forge.utils.exceptions import (
     InvalidArgumentError,
     OperationNotAllowedError,
 )
+from security import safe_command
 
 logger = logging.getLogger(__name__)
 
@@ -206,8 +207,7 @@ class CodeExecutorComponent(
                 f"executing {file_path} directly..."
             )
             with self.workspace.mount() as local_path:
-                result = subprocess.run(
-                    ["python", "-B", str(file_path.relative_to(self.workspace.root))]
+                result = safe_command.run(subprocess.run, ["python", "-B", str(file_path.relative_to(self.workspace.root))]
                     + args,
                     capture_output=True,
                     encoding="utf8",
@@ -281,8 +281,7 @@ class CodeExecutorComponent(
             f"Executing command '{command_line}' in working directory '{os.getcwd()}'"
         )
 
-        result = subprocess.run(
-            command_line if allow_shell else shlex.split(command_line),
+        result = safe_command.run(subprocess.run, command_line if allow_shell else shlex.split(command_line),
             capture_output=True,
             shell=allow_shell,
         )
@@ -329,8 +328,7 @@ class CodeExecutorComponent(
         )
 
         do_not_show_output = subprocess.DEVNULL
-        process = subprocess.Popen(
-            command_line if allow_shell else shlex.split(command_line),
+        process = safe_command.run(subprocess.Popen, command_line if allow_shell else shlex.split(command_line),
             shell=allow_shell,
             stdout=do_not_show_output,
             stderr=do_not_show_output,
